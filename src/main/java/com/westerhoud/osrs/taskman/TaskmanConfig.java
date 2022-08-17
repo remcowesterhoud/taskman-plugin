@@ -4,16 +4,17 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("example")
-public interface TaskmanConfig extends Config
-{
-	@ConfigItem(
-		keyName = "greeting",
-		name = "Welcome Greeting",
-		description = "The message to show to the user when they login"
-	)
-	default String greeting()
-	{
-		return "Hello";
-	}
+@ConfigGroup("taskman")
+public interface TaskmanConfig extends Config {
+  @ConfigItem(
+      keyName = "username",
+      name = "Username",
+      description = "Your username on the Taskman website")
+  String username();
+
+  @ConfigItem(
+      keyName = "password",
+      name = "Password",
+      description = "Your password on the Taskman website")
+  String password();
 }
