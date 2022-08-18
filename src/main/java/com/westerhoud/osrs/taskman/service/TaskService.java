@@ -14,14 +14,12 @@ import java.net.http.HttpResponse;
 
 public class TaskService {
 
-  private final TaskmanConfig config;
   private final HttpClient client;
-  private final URI baseUri;
+  private URI baseUri;
 
-  public TaskService(final TaskmanConfig config) throws URISyntaxException {
-    this.config = config;
+  public TaskService(final URI baseUri) {
     client = HttpClient.newHttpClient();
-    baseUri = new URI(config.url());
+    this.baseUri = baseUri;
   }
 
   public AccountTask getCurrentTask(final Account account)
