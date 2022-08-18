@@ -1,24 +1,27 @@
 package com.westerhoud.osrs.taskman.ui;
 
 import com.westerhoud.osrs.taskman.domain.Account;
+import com.westerhoud.osrs.taskman.service.TaskService;
 import net.runelite.client.ui.PluginPanel;
 
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class TaskmanPluginPanel extends PluginPanel {
 
-  public TaskmanPluginPanel(final Optional<Account> account) {
+  private final TaskService taskService;
+
+  public TaskmanPluginPanel(final Optional<Account> account, TaskService taskService) {
     super();
+    this.taskService = taskService;
     setLayout(new BorderLayout());
     account.ifPresentOrElse(this::addLoggedInPanels, this::addErrorPanels);
   }
 
   private void addLoggedInPanels(Account account) {
-    add(new LoggedUserPanel(account.getUsername()), BorderLayout.NORTH);
-//    add(new CurrentTaskPanel(currentTask.getTask()), BorderLayout.CENTER);
+    add(new LoggedUserPanel(account), BorderLayout.NORTH);
+    add(new CurrentTaskPanel(account, taskService), BorderLayout.CENTER);
     add(new ButtonsPanel(), BorderLayout.SOUTH);
   }
 

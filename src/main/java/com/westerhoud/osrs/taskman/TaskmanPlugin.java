@@ -51,7 +51,7 @@ public class TaskmanPlugin extends Plugin {
 
     // Sidebar
     final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
-    sidePanel = new TaskmanPluginPanel(loggedInUser);
+    sidePanel = new TaskmanPluginPanel(loggedInUser, taskService);
 
     clientToolbar.addNavigation(
         NavigationButton.builder()
