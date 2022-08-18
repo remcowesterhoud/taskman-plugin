@@ -20,9 +20,13 @@ public class TaskmanPluginPanel extends PluginPanel {
   }
 
   private void addLoggedInPanels(Account account) {
-    add(new LoggedUserPanel(account), BorderLayout.NORTH);
-    add(new CurrentTaskPanel(account, taskService), BorderLayout.CENTER);
-    add(new ButtonsPanel(), BorderLayout.SOUTH);
+    LoggedUserPanel loggedUserPanel = new LoggedUserPanel(account);
+    CurrentTaskPanel currentTaskPanel = new CurrentTaskPanel(account, taskService);
+    ButtonsPanel buttonsPanel = new ButtonsPanel(account, taskService, loggedUserPanel, currentTaskPanel);
+
+    add(loggedUserPanel, BorderLayout.NORTH);
+    add(currentTaskPanel, BorderLayout.CENTER);
+    add(buttonsPanel, BorderLayout.SOUTH);
   }
 
   private void addErrorPanels() {

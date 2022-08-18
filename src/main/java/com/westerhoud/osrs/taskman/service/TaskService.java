@@ -76,4 +76,90 @@ public class TaskService {
       return Optional.empty();
     }
   }
+
+  public Optional<AccountTask> completeTask(final Account account) {
+    final HttpRequest request;
+    try {
+      request =
+              HttpRequest.newBuilder()
+                      .uri(
+                              new URI(String.format("%s/account/%d/complete", baseUri.toString(), account.getId())))
+                      .header("Authorization", account.getAuthorizationHeader())
+                      .POST(HttpRequest.BodyPublishers.noBody())
+                      .build();
+    } catch (URISyntaxException e) {
+      log.error("Invalid URI", e);
+      return Optional.empty();
+    }
+
+    final HttpResponse<String> response;
+    try {
+      response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (IOException | InterruptedException e) {
+      log.error(
+              String.format(
+                      "Could not send complete task request to server for user %s", account.getUsername()),
+              e);
+      return Optional.empty();
+    }
+
+    switch (response.statusCode()) {
+      case 200:
+        return mapResponseToTask(response);
+      case 403:
+        log.error(
+                String.format(
+                        "User %s not authorized to get current task for id %d",
+                        account.getUsername(), account.getId()));
+        return Optional.empty();
+      case 404:
+        log.info("User has no current task");
+        return Optional.empty();
+      default:
+        return Optional.empty();
+    }
+  }
+
+  public Optional<AccountTask> generateTask(final Account account) {
+    final HttpRequest request;
+    try {
+      request =
+              HttpRequest.newBuilder()
+                      .uri(
+                              new URI(String.format("%s/account/%d/generate", baseUri.toString(), account.getId())))
+                      .header("Authorization", account.getAuthorizationHeader())
+                      .POST(HttpRequest.BodyPublishers.noBody())
+                      .build();
+    } catch (URISyntaxException e) {
+      log.error("Invalid URI", e);
+      return Optional.empty();
+    }
+
+    final HttpResponse<String> response;
+    try {
+      response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (IOException | InterruptedException e) {
+      log.error(
+              String.format(
+                      "Could not send complete task request to server for user %s", account.getUsername()),
+              e);
+      return Optional.empty();
+    }
+
+    switch (response.statusCode()) {
+      case 200:
+        return mapResponseToTask(response);
+      case 400:
+        log.info("User already has a task");
+        return Optional.empty();
+      case 403:
+        log.error(
+                String.format(
+                        "User %s not authorized to get current task for id %d",
+                        account.getUsername(), account.getId()));
+        return Optional.empty();
+      default:
+        return Optional.empty();
+    }
+  }
 }

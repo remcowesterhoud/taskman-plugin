@@ -7,6 +7,8 @@ import java.awt.*;
 
 public class LoggedUserPanel extends JPanel {
 
+    private final JLabel tierText;
+
     public LoggedUserPanel(final Account account) {
         setLayout(new GridLayout(2, 2));
         setPreferredSize(new Dimension(300, 40));
@@ -18,8 +20,14 @@ public class LoggedUserPanel extends JPanel {
         add(usernameText);
 
         final JLabel tierLabel = new JLabel("Current tier:");
-        final JLabel tierText = new JLabel(account.getTier());
+        tierText = new JLabel(account.getTier());
         add(tierLabel);
         add(tierText);
+    }
+
+    public void setTier(final String tier) {
+        tierText.setText(tier);
+        revalidate();
+        repaint();
     }
 }
