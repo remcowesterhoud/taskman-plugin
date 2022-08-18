@@ -10,7 +10,7 @@ public class LoggedUserPanel extends JPanel {
     private final JLabel tierText;
 
     public LoggedUserPanel(final Account account) {
-        setLayout(new GridLayout(2, 2));
+        setLayout(new GridLayout(2, 2, 5, 5));
         setPreferredSize(new Dimension(300, 40));
         setMinimumSize(new Dimension(170, 20));
 
