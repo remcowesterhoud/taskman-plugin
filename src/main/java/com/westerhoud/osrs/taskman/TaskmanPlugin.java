@@ -1,10 +1,14 @@
 package com.westerhoud.osrs.taskman;
 
 import com.google.inject.Provides;
+import com.westerhoud.osrs.taskman.domain.Task;
+import com.westerhoud.osrs.taskman.service.SheetService;
 import com.westerhoud.osrs.taskman.ui.TaskmanPluginPanel;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -22,11 +26,16 @@ public class TaskmanPlugin extends Plugin {
   @Inject private TaskmanConfig config;
 
   private TaskmanPluginPanel sidePanel;
+  private SheetService sheetService;
+
   @Override
-  protected void startUp() {
+  protected void startUp() throws Exception {
     // Sidebar
     final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
-    sidePanel = new TaskmanPluginPanel();
+
+    sheetService = new SheetService();
+
+    sidePanel = new TaskmanPluginPanel(this);
     clientToolbar.addNavigation(
         NavigationButton.builder()
             .tooltip("Taskman")
@@ -34,6 +43,15 @@ public class TaskmanPlugin extends Plugin {
             .icon(icon)
             .panel(sidePanel)
             .build());
+  }
+
+  public Task getCurrentTask() throws Exception {
+    return sheetService.getCurrentTask(config.spreadsheetKey(), config.passphrase());
+  }
+
+  @Subscribe
+  public void onConfigChanged(final ConfigChanged configChanged) {
+    sidePanel.reset();
   }
 
   @Provides

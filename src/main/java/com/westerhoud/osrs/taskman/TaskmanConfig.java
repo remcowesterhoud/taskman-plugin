@@ -24,14 +24,4 @@ public interface TaskmanConfig extends Config {
   default String passphrase() {
     return "";
   }
-
-  @ConfigItem(
-      position = 3,
-      keyName = "url",
-      name = "Backend",
-      description = "Backend which handles communicating with the spreadsheet using the Google Sheet API",
-      hidden = true)
-  default String url() {
-    return "https://osrs-taskman.herokuapp.com";
-  }
 }

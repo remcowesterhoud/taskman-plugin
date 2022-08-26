@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Task {
-    private String name;
-    private String imageUrl;
+public class ErrorResponse {
+    private String message;
 }
