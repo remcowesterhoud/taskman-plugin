@@ -8,30 +8,28 @@ import net.runelite.client.config.ConfigItem;
 public interface TaskmanConfig extends Config {
   @ConfigItem(
       position = 1,
-      section = "credentials",
-      keyName = "username",
-      name = "Username",
-      description = "Your username on the Taskman website")
-  default String username() {
-    return "username";
+      keyName = "key",
+      name = "Spreadsheet key",
+      description = "The key of your spreadsheet")
+  default String spreadsheetKey() {
+    return "";
   }
 
   @ConfigItem(
       position = 2,
-      section = "credentials",
-      keyName = "password",
-      name = "Password",
+      keyName = "passphrase",
+      name = "Passphrase",
       secret = true,
-      description = "Your password on the Taskman website")
-  default String password() {
-    return "password";
+      description = "The passphrase you have added in your sheet")
+  default String passphrase() {
+    return "";
   }
 
   @ConfigItem(
       position = 3,
       keyName = "url",
-      name = "Taskman website",
-      description = "Url of the Taskman website",
+      name = "Backend",
+      description = "Backend which handles communicating with the spreadsheet using the Google Sheet API",
       hidden = true)
   default String url() {
     return "https://osrs-taskman.herokuapp.com";
