@@ -17,9 +17,7 @@ import java.net.http.HttpResponse;
 @Slf4j
 public class SheetService {
 
-  private static final String BASE_URL =
-      //  "https://osrs-taskman.herokuapp.com/sheet";
-      "http://localhost:8080/sheet";
+  private static final String BASE_URL = "https://osrs-taskman.herokuapp.com/sheet";
   private final HttpClient client;
   private final String currentUrl;
   private final URI generateUrl;
