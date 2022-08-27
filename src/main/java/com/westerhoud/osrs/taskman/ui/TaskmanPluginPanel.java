@@ -57,6 +57,7 @@ public class TaskmanPluginPanel extends PluginPanel {
     generateButton.addActionListener(e -> generateTaskAndUpdateContent());
     completeButton.setFont(FontManager.getRunescapeSmallFont());
     completeButton.setFocusPainted(false);
+    completeButton.addActionListener(e -> completeTaskAndUpdateContent());
     buttonPanel.add(generateButton, BorderLayout.WEST);
     buttonPanel.add(completeButton, BorderLayout.CENTER);
 
@@ -101,6 +102,16 @@ public class TaskmanPluginPanel extends PluginPanel {
   private void generateTaskAndUpdateContent() {
     try {
       final Task newTask = taskmanPlugin.generateTask();
+      updateTaskPanelContent(newTask);
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      showErrorMessage(e);
+    }
+  }
+
+  private void completeTaskAndUpdateContent() {
+    try {
+      final Task newTask = taskmanPlugin.completeTask();
       updateTaskPanelContent(newTask);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
