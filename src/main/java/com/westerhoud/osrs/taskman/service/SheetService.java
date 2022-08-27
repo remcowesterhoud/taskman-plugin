@@ -2,6 +2,7 @@ package com.westerhoud.osrs.taskman.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.westerhoud.osrs.taskman.domain.ErrorResponse;
+import com.westerhoud.osrs.taskman.domain.SheetRequestBody;
 import com.westerhoud.osrs.taskman.domain.Task;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +54,27 @@ public class SheetService {
     throw new IllegalArgumentException(error.getMessage());
   }
 
+  public Task generateTask(final String key, final String passphrase) throws IOException, InterruptedException {
+    final HttpRequest request;
+    request =
+            HttpRequest.newBuilder()
+                    .uri(generateUrl)
+                    .setHeader("Content-Type", "application/json")
+                    .POST(getRequestBody(key, passphrase))
+                    .build();
+
+    final HttpResponse<String> response =
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return mapResponseToTask(response);
+    }
+
+    log.error(response.body());
+    ErrorResponse error = mapResponseToErrorResponse(response);
+    throw new IllegalArgumentException(error.getMessage());
+  }
+
   private Task mapResponseToTask(final HttpResponse<String> response) throws IOException {
     return new ObjectMapper().readValue(response.body(), Task.class);
   }
@@ -60,5 +82,10 @@ public class SheetService {
   private ErrorResponse mapResponseToErrorResponse(final HttpResponse<String> response)
       throws IOException {
     return new ObjectMapper().readValue(response.body(), ErrorResponse.class);
+  }
+
+  private HttpRequest.BodyPublisher getRequestBody(final String key, final String passphrase) throws IOException {
+    final SheetRequestBody body = new SheetRequestBody(key, passphrase);
+    return HttpRequest.BodyPublishers.ofString(new ObjectMapper().writeValueAsString(body));
   }
 }

@@ -49,6 +49,10 @@ public class TaskmanPlugin extends Plugin {
     return sheetService.getCurrentTask(config.spreadsheetKey(), config.passphrase());
   }
 
+  public Task generateTask() throws Exception {
+    return sheetService.generateTask(config.spreadsheetKey(), config.passphrase());
+  }
+
   @Subscribe
   public void onConfigChanged(final ConfigChanged configChanged) {
     sidePanel.reset();
