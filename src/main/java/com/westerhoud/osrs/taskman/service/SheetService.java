@@ -2,6 +2,7 @@ package com.westerhoud.osrs.taskman.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.westerhoud.osrs.taskman.domain.ErrorResponse;
+import com.westerhoud.osrs.taskman.domain.Progress;
 import com.westerhoud.osrs.taskman.domain.SheetRequestBody;
 import com.westerhoud.osrs.taskman.domain.Task;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +24,14 @@ public class SheetService {
   private final String currentUrl;
   private final URI generateUrl;
   private final URI completeUrl;
+  private final String progressUrl;
 
   public SheetService() throws URISyntaxException {
     client = HttpClient.newHttpClient();
     this.currentUrl = BASE_URL + "/current";
     this.generateUrl = new URI(BASE_URL + "/generate");
     this.completeUrl = new URI(BASE_URL + "/complete");
+    this.progressUrl = BASE_URL + "/progress";
   }
 
   public Task getCurrentTask(final String key, final String passphrase)
@@ -71,15 +74,36 @@ public class SheetService {
     return executeRequest(request);
   }
 
+  public Progress progress(final String key, final String passphrase)
+      throws URISyntaxException, IOException, InterruptedException {
+    final HttpRequest request;
+    request =
+        HttpRequest.newBuilder()
+            .uri(new URI(String.format("%s?key=%s&passphrase=%s", progressUrl, key, passphrase)))
+            .GET()
+            .build();
+
+    final HttpResponse<String> response =
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return new ObjectMapper().readValue(response.body(), Progress.class);
+    }
+
+    log.error(response.body());
+    ErrorResponse error = mapResponseToErrorResponse(response);
+    throw new IllegalArgumentException(error.getMessage());
+  }
+
   private HttpRequest.BodyPublisher getRequestBody(final String key, final String passphrase)
-          throws IOException {
+      throws IOException {
     final SheetRequestBody body = new SheetRequestBody(key, passphrase);
     return HttpRequest.BodyPublishers.ofString(new ObjectMapper().writeValueAsString(body));
   }
 
   private Task executeRequest(HttpRequest request) throws IOException, InterruptedException {
     final HttpResponse<String> response =
-            client.send(request, HttpResponse.BodyHandlers.ofString());
+        client.send(request, HttpResponse.BodyHandlers.ofString());
 
     if (response.statusCode() == 200) {
       return mapResponseToTask(response);
