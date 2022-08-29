@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TierProgress {
-    private int maxValue;
-    private int value;
+  private int maxValue;
+  private int value;
 }

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Task {
-    private String name;
-    private String imageUrl;
+  private String name;
+  private String imageUrl;
 }

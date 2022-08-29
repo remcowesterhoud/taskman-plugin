@@ -12,6 +12,6 @@ import java.util.Map;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Progress {
-    private Map<String, TierProgress> progressByTier;
-    private String currentTier;
+  private Map<String, TierProgress> progressByTier;
+  private String currentTier;
 }

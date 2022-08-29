@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SheetRequestBody {
-    private String key;
-    private String passphrase;
+  private String key;
+  private String passphrase;
 }

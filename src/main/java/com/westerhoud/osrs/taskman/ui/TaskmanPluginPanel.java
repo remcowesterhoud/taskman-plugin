@@ -18,12 +18,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 public class TaskmanPluginPanel extends PluginPanel {
