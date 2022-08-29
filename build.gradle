@@ -18,7 +18,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.20'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.0.1'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
 
 	testImplementation 'junit:junit:4.12'
 	testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion

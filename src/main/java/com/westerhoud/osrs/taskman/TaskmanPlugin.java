@@ -40,7 +40,7 @@ public class TaskmanPlugin extends Plugin {
     clientToolbar.addNavigation(
         NavigationButton.builder()
             .tooltip("Taskman")
-            .priority(69)
+            .priority(8)
             .icon(icon)
             .panel(sidePanel)
             .build());
