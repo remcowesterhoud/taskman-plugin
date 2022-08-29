@@ -11,15 +11,15 @@ Taskman mode for OSRS.
 Follow these steps to give the plugin access to your spreadsheet. It needs this to read you current progress and to
 generate and complete your tasks.
 
-1. Share you spreadsheet with `taskman-plugin@taskman-360515.iam.gserviceaccount.com`
+1. Share you spreadsheet with `taskman-plugin@taskman-360515.iam.gserviceaccount.com`  
    ![Share sheet](./img/share.PNG)
-2. Add a new sheet
+2. Add a new sheet  
    ![Add sheet](./img/add_sheet.PNG)
-3. Enter a passphrase and rename the sheet. **Please do not use your Runescape password!**
+3. Enter a passphrase and rename the sheet. **Please do not use your Runescape password!**  
    ![Passphrase and rename](./img/passphrase_and_rename.PNG)
-4. Protect the sheet
+4. Protect the sheet  
    ![Protect sheet](./img/protect_sheet.PNG)
-5. Set permissions
+5. Set permissions  
    ![Set permissions](./img/set_permissions.PNG)
 6. Hide the sheet  
    ![Hide sheet](./img/hide_sheet.PNG)
