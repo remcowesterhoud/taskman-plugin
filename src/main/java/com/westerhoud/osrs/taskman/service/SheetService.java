@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.time.Duration;
 
 @Slf4j
 public class SheetService {
@@ -22,7 +23,11 @@ public class SheetService {
   private final String progressUrl;
 
   public SheetService() {
-    this.client = new OkHttpClient();
+    this.client =
+        new OkHttpClient.Builder()
+            .connectTimeout(Duration.ofSeconds(15))
+            .callTimeout(Duration.ofSeconds(15))
+            .build();
     this.gson = new Gson();
     this.currentUrl = BASE_URL + "/current";
     this.generateUrl = BASE_URL + "/generate";
