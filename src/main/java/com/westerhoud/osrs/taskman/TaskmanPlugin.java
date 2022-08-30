@@ -28,6 +28,7 @@ public class TaskmanPlugin extends Plugin {
 
   private TaskmanPluginPanel sidePanel;
   private SheetService sheetService;
+  private NavigationButton navigationButton;
 
   @Override
   protected void startUp() throws Exception {
@@ -37,13 +38,20 @@ public class TaskmanPlugin extends Plugin {
     sheetService = new SheetService();
 
     sidePanel = new TaskmanPluginPanel(this);
-    clientToolbar.addNavigation(
+    navigationButton =
         NavigationButton.builder()
             .tooltip("Taskman")
             .priority(8)
             .icon(icon)
             .panel(sidePanel)
-            .build());
+            .build();
+    clientToolbar.addNavigation(navigationButton);
+  }
+
+  @Override
+  protected void shutDown() throws Exception {
+    // Sidebar
+    clientToolbar.removeNavigation(navigationButton);
   }
 
   public Task getCurrentTask() throws Exception {
