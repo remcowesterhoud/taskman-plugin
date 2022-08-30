@@ -9,25 +9,20 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.time.Duration;
 
 @Slf4j
 public class SheetService {
 
   private static final String BASE_URL = "https://osrs-taskman.herokuapp.com/sheet";
-  final OkHttpClient client;
-  final Gson gson;
+  private final OkHttpClient client;
+  private final Gson gson;
   private final String currentUrl;
   private final String generateUrl;
   private final String completeUrl;
   private final String progressUrl;
 
-  public SheetService() {
-    this.client =
-        new OkHttpClient.Builder()
-            .connectTimeout(Duration.ofSeconds(15))
-            .callTimeout(Duration.ofSeconds(15))
-            .build();
+  public SheetService(OkHttpClient okHttpClient) {
+    this.client = okHttpClient;
     this.gson = new Gson();
     this.currentUrl = BASE_URL + "/current";
     this.generateUrl = BASE_URL + "/generate";

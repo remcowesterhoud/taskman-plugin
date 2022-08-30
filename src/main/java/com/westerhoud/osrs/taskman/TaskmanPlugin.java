@@ -15,6 +15,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.util.ImageUtil;
+import okhttp3.OkHttpClient;
 
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
@@ -25,6 +26,7 @@ public class TaskmanPlugin extends Plugin {
   @Inject private Client client;
   @Inject private ClientToolbar clientToolbar;
   @Inject private TaskmanConfig config;
+  @Inject private OkHttpClient okHttpClient;
 
   private TaskmanPluginPanel sidePanel;
   private SheetService sheetService;
@@ -35,7 +37,7 @@ public class TaskmanPlugin extends Plugin {
     // Sidebar
     final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
 
-    sheetService = new SheetService();
+    sheetService = new SheetService(okHttpClient);
 
     sidePanel = new TaskmanPluginPanel(this);
     navigationButton =
