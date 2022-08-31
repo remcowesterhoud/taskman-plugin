@@ -35,6 +35,7 @@ public class TaskmanPluginPanel extends PluginPanel {
   private final JShadowedLabel progressLabel = new JShadowedLabel("Progress:");
   private final JShadowedLabel imageLabel = new JShadowedLabel();
   private final JShadowedLabel nameLabel = new JShadowedLabel();
+  private final JButton refreshButton = new JButton();
   private final ColorJButton generateButton =
       new ColorJButton("Generate task", ColorScheme.DARK_GRAY_COLOR);
   private final ColorJButton completeButton =
@@ -53,11 +54,19 @@ public class TaskmanPluginPanel extends PluginPanel {
     taskPanel.setVisible(false);
 
     taskDataPanel = new JPanel(new BorderLayout(10, 5));
+    final JPanel taskDataTitlePanel = new JPanel(new BorderLayout());
     currentTaskLabel.setFont(FontManager.getRunescapeFont());
     currentTaskLabel.setForeground(Color.WHITE);
+    refreshButton.setIcon(getRefreshButton());
+    refreshButton.setPreferredSize(new Dimension(25, 25));
+    refreshButton.setMaximumSize(new Dimension(25, 25));
+    refreshButton.setFocusPainted(false);
+    refreshButton.addActionListener(e -> this.reset());
+    taskDataTitlePanel.add(currentTaskLabel, BorderLayout.WEST);
+    taskDataTitlePanel.add(refreshButton, BorderLayout.EAST);
     nameLabel.setFont(FontManager.getRunescapeSmallFont());
     nameLabel.setHorizontalAlignment(SwingConstants.LEFT);
-    taskDataPanel.add(currentTaskLabel, BorderLayout.NORTH);
+    taskDataPanel.add(taskDataTitlePanel, BorderLayout.NORTH);
     taskDataPanel.add(imageLabel, BorderLayout.WEST);
     taskDataPanel.add(nameLabel, BorderLayout.CENTER);
 
@@ -195,6 +204,12 @@ public class TaskmanPluginPanel extends PluginPanel {
     }
 
     Image resizedImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+    return new ImageIcon(resizedImage);
+  }
+
+  private Icon getRefreshButton() {
+    final BufferedImage image = ImageUtil.loadImageResource(getClass(), "refresh.png");
+    final Image resizedImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
     return new ImageIcon(resizedImage);
   }
 
