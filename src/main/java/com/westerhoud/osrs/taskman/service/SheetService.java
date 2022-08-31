@@ -78,7 +78,6 @@ public class SheetService {
       return gson.fromJson(response.body().string(), Progress.class);
     }
 
-    log.error(response.body().string());
     ErrorResponse error = mapResponseToErrorResponse(response);
     throw new IllegalArgumentException(error.getMessage());
   }
@@ -95,7 +94,6 @@ public class SheetService {
       return mapResponseToTask(response);
     }
 
-    log.error(response.body().string());
     ErrorResponse error = mapResponseToErrorResponse(response);
     throw new IllegalArgumentException(error.getMessage());
   }
@@ -105,6 +103,8 @@ public class SheetService {
   }
 
   private ErrorResponse mapResponseToErrorResponse(final Response response) throws IOException {
-    return gson.fromJson(response.body().string(), ErrorResponse.class);
+    final String responseString = response.body().string();
+    log.error(responseString);
+    return gson.fromJson(responseString, ErrorResponse.class);
   }
 }
