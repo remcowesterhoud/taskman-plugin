@@ -94,6 +94,14 @@ public class TaskmanPluginPanel extends PluginPanel {
     errorPanel = new PluginErrorPanel();
     errorPanel.setBorder(new EmptyBorder(50, 0, 0, 0));
     errorPanel.setVisible(false);
+    final JPanel tryAgainPanel = new JPanel();
+    final JButton tryAgainButton = new JButton("Try again");
+    tryAgainButton.setFocusPainted(false);
+    tryAgainButton.addActionListener(e -> this.reset());
+    tryAgainButton.setPreferredSize(new Dimension(100, 25));
+    tryAgainButton.setMaximumSize(new Dimension(150, 25));
+    tryAgainPanel.add(tryAgainButton);
+    errorPanel.add(tryAgainPanel, BorderLayout.SOUTH);
 
     getCurrentTaskAndUpdateContent();
     getProgressAndUpdateContent();
