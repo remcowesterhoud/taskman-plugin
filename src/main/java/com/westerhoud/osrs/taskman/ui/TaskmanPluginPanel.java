@@ -4,6 +4,22 @@ import com.westerhoud.osrs.taskman.TaskmanPlugin;
 import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.Task;
 import com.westerhoud.osrs.taskman.domain.TierProgress;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -13,15 +29,6 @@ import net.runelite.client.ui.components.PluginErrorPanel;
 import net.runelite.client.ui.components.ProgressBar;
 import net.runelite.client.ui.components.shadowlabel.JShadowedLabel;
 import net.runelite.client.util.ImageUtil;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
 
 @Slf4j
 public class TaskmanPluginPanel extends PluginPanel {
@@ -61,7 +68,7 @@ public class TaskmanPluginPanel extends PluginPanel {
     refreshButton.setPreferredSize(new Dimension(25, 25));
     refreshButton.setMaximumSize(new Dimension(25, 25));
     refreshButton.setFocusPainted(false);
-    refreshButton.addActionListener(e -> this.reset());
+    refreshButton.addActionListener(e -> reset());
     taskDataTitlePanel.add(currentTaskLabel, BorderLayout.WEST);
     taskDataTitlePanel.add(refreshButton, BorderLayout.EAST);
     nameLabel.setFont(FontManager.getRunescapeSmallFont());
@@ -97,7 +104,7 @@ public class TaskmanPluginPanel extends PluginPanel {
     final JPanel tryAgainPanel = new JPanel();
     final JButton tryAgainButton = new JButton("Try again");
     tryAgainButton.setFocusPainted(false);
-    tryAgainButton.addActionListener(e -> this.reset());
+    tryAgainButton.addActionListener(e -> reset());
     tryAgainButton.setPreferredSize(new Dimension(100, 25));
     tryAgainButton.setMaximumSize(new Dimension(150, 25));
     tryAgainPanel.add(tryAgainButton);
@@ -117,7 +124,7 @@ public class TaskmanPluginPanel extends PluginPanel {
     taskPanel.setVisible(true);
   }
 
-  private void showErrorMessage(Exception e) {
+  private void showErrorMessage(final Exception e) {
     errorPanel.setContent("Oops... Something went wrong", e.getMessage());
     errorPanel.setVisible(true);
     errorPanel.revalidate();
@@ -129,7 +136,7 @@ public class TaskmanPluginPanel extends PluginPanel {
       final Task currentTask = taskmanPlugin.getCurrentTask();
       updateTaskPanelContent(currentTask);
       errorPanel.setVisible(false);
-    } catch (Exception e) {
+    } catch (final Exception e) {
       log.error(e.getMessage(), e);
       showErrorMessage(e);
     }
@@ -140,7 +147,7 @@ public class TaskmanPluginPanel extends PluginPanel {
       final Task newTask = taskmanPlugin.generateTask();
       updateTaskPanelContent(newTask);
       errorPanel.setVisible(false);
-    } catch (Exception e) {
+    } catch (final Exception e) {
       log.error(e.getMessage(), e);
       showErrorMessage(e);
     }
@@ -152,7 +159,7 @@ public class TaskmanPluginPanel extends PluginPanel {
       updateTaskPanelContent(newTask);
       getProgressAndUpdateContent();
       errorPanel.setVisible(false);
-    } catch (Exception e) {
+    } catch (final Exception e) {
       log.error(e.getMessage(), e);
       showErrorMessage(e);
     }
@@ -163,7 +170,8 @@ public class TaskmanPluginPanel extends PluginPanel {
       final AccountProgress accountProgress = taskmanPlugin.progress();
       progressPanel.removeAll();
       progressPanel.add(progressLabel);
-      for (Map.Entry<String, TierProgress> entry : accountProgress.getProgressByTier().entrySet()) {
+      for (final Map.Entry<String, TierProgress> entry :
+          accountProgress.getProgressByTier().entrySet()) {
         final String key = entry.getKey();
         final TierProgress value = entry.getValue();
         final ProgressBar progressBar = new ProgressBar();
@@ -171,7 +179,7 @@ public class TaskmanPluginPanel extends PluginPanel {
         progressBar.setValue(value.getValue());
         progressBar.setRightLabel(String.valueOf(value.getMaxValue()));
         progressBar.setLeftLabel(String.valueOf(value.getValue()));
-        int percentage = progressBar.getPercentage();
+        final int percentage = progressBar.getPercentage();
         progressBar.setCenterLabel(String.format("%s %d%%", key, percentage));
         progressBar.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         if (percentage == 0) {
@@ -190,7 +198,7 @@ public class TaskmanPluginPanel extends PluginPanel {
         progressPanel.add(progressBar);
         progressPanel.setVisible(true);
       }
-    } catch (Exception e) {
+    } catch (final Exception e) {
       log.error(e.getMessage(), e);
       showErrorMessage(e);
     }
@@ -199,10 +207,10 @@ public class TaskmanPluginPanel extends PluginPanel {
   private Icon getTaskImage(final Task currentTask) {
     BufferedImage image = null;
     try {
-      String parsedImageUrl = currentTask.getImageUrl().split("\\?")[0];
+      final String parsedImageUrl = currentTask.getImageUrl().split("\\?")[0];
       final URL imageUrl = new URL(parsedImageUrl);
       image = ImageIO.read(imageUrl);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       log.error(e.getMessage(), e);
     }
 
@@ -211,7 +219,7 @@ public class TaskmanPluginPanel extends PluginPanel {
       image = ImageUtil.loadImageResource(getClass(), "error.png");
     }
 
-    Image resizedImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+    final Image resizedImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
     return new ImageIcon(resizedImage);
   }
 

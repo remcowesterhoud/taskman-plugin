@@ -3,7 +3,6 @@ package com.westerhoud.osrs.taskman.api;
 import com.westerhoud.osrs.taskman.domain.AccountCredentials;
 import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.Task;
-
 import java.io.IOException;
 
 public interface TaskService {

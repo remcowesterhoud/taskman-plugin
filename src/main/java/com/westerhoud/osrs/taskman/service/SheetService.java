@@ -2,11 +2,18 @@ package com.westerhoud.osrs.taskman.service;
 
 import com.google.gson.Gson;
 import com.westerhoud.osrs.taskman.api.TaskService;
-import com.westerhoud.osrs.taskman.domain.*;
-import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-
+import com.westerhoud.osrs.taskman.domain.AccountCredentials;
+import com.westerhoud.osrs.taskman.domain.AccountProgress;
+import com.westerhoud.osrs.taskman.domain.ErrorResponse;
+import com.westerhoud.osrs.taskman.domain.SheetRequestBody;
+import com.westerhoud.osrs.taskman.domain.Task;
 import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 @Slf4j
 public class SheetService implements TaskService {
@@ -19,15 +26,16 @@ public class SheetService implements TaskService {
   private final String completeUrl;
   private final String progressUrl;
 
-  public SheetService(OkHttpClient okHttpClient) {
-    this.client = okHttpClient;
-    this.gson = new Gson();
-    this.currentUrl = BASE_URL + "/current";
-    this.generateUrl = BASE_URL + "/generate";
-    this.completeUrl = BASE_URL + "/complete";
-    this.progressUrl = BASE_URL + "/progress";
+  public SheetService(final OkHttpClient okHttpClient) {
+    client = okHttpClient;
+    gson = new Gson();
+    currentUrl = BASE_URL + "/current";
+    generateUrl = BASE_URL + "/generate";
+    completeUrl = BASE_URL + "/complete";
+    progressUrl = BASE_URL + "/progress";
   }
 
+  @Override
   public Task getCurrentTask(final String key) throws IOException {
     if (key == null || key.isEmpty()) {
       throw new IllegalArgumentException(
@@ -40,6 +48,7 @@ public class SheetService implements TaskService {
     return executeRequest(request);
   }
 
+  @Override
   public Task generateTask(final AccountCredentials credentials) throws IOException {
     final Request request =
         new Request.Builder()
@@ -50,6 +59,7 @@ public class SheetService implements TaskService {
     return executeRequest(request);
   }
 
+  @Override
   public Task completeTask(final AccountCredentials credentials) throws IOException {
     final Request request =
         new Request.Builder()
@@ -60,6 +70,7 @@ public class SheetService implements TaskService {
     return executeRequest(request);
   }
 
+  @Override
   public AccountProgress getAccountProgress(final String key) throws IOException {
     if (key == null || key.isEmpty()) {
       throw new IllegalArgumentException(
@@ -75,7 +86,7 @@ public class SheetService implements TaskService {
       return gson.fromJson(response.body().string(), AccountProgress.class);
     }
 
-    ErrorResponse error = mapResponseToErrorResponse(response);
+    final ErrorResponse error = mapResponseToErrorResponse(response);
     throw new IllegalArgumentException(error.getMessage());
   }
 
@@ -91,7 +102,7 @@ public class SheetService implements TaskService {
       return mapResponseToTask(response);
     }
 
-    ErrorResponse error = mapResponseToErrorResponse(response);
+    final ErrorResponse error = mapResponseToErrorResponse(response);
     throw new IllegalArgumentException(error.getMessage());
   }
 
