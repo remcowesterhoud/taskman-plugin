@@ -1,17 +1,15 @@
 package com.westerhoud.osrs.taskman.service;
 
 import com.google.gson.Gson;
-import com.westerhoud.osrs.taskman.domain.AccountProgress;
-import com.westerhoud.osrs.taskman.domain.ErrorResponse;
-import com.westerhoud.osrs.taskman.domain.SheetRequestBody;
-import com.westerhoud.osrs.taskman.domain.Task;
+import com.westerhoud.osrs.taskman.api.TaskService;
+import com.westerhoud.osrs.taskman.domain.*;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 import java.io.IOException;
 
 @Slf4j
-public class SheetService {
+public class SheetService implements TaskService {
 
   private static final String BASE_URL = "https://osrs-taskman.herokuapp.com/sheet";
   private final OkHttpClient client;
@@ -30,48 +28,46 @@ public class SheetService {
     this.progressUrl = BASE_URL + "/progress";
   }
 
-  public Task getCurrentTask(final String key, final String passphrase) throws IOException {
-    if (key == null || key.isEmpty() || passphrase == null || passphrase.isEmpty()) {
+  public Task getCurrentTask(final String key) throws IOException {
+    if (key == null || key.isEmpty()) {
       throw new IllegalArgumentException(
-          "Please set your key and passphrase in the plugin configurations");
+          "Please set your username / spreadsheet key in the plugin configurations");
     }
 
     final Request request =
-        new Request.Builder()
-            .url(String.format("%s?key=%s&passphrase=%s", currentUrl, key, passphrase))
-            .get()
-            .build();
+        new Request.Builder().url(String.format("%s?key=%s", currentUrl, key)).get().build();
 
     return executeRequest(request);
   }
 
-  public Task generateTask(final String key, final String passphrase) throws IOException {
+  public Task generateTask(final AccountCredentials credentials) throws IOException {
     final Request request =
         new Request.Builder()
             .url(generateUrl)
             .header("Content-Type", "application/json")
-            .post(getRequestBody(key, passphrase))
+            .post(getRequestBody(credentials.getIdentifier(), credentials.getPassword()))
             .build();
     return executeRequest(request);
   }
 
-  public Task completeTask(final String key, final String passphrase) throws IOException {
+  public Task completeTask(final AccountCredentials credentials) throws IOException {
     final Request request =
         new Request.Builder()
             .url(completeUrl)
             .header("Content-Type", "application/json")
-            .post(getRequestBody(key, passphrase))
+            .post(getRequestBody(credentials.getIdentifier(), credentials.getPassword()))
             .build();
     return executeRequest(request);
   }
 
-  public AccountProgress getAccountProgress(final String key, final String passphrase)
-      throws IOException {
+  public AccountProgress getAccountProgress(final String key) throws IOException {
+    if (key == null || key.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Please set your username / spreadsheet key in the plugin configurations");
+    }
+
     final Request request =
-        new Request.Builder()
-            .url(String.format("%s?key=%s&passphrase=%s", progressUrl, key, passphrase))
-            .get()
-            .build();
+        new Request.Builder().url(String.format("%s?key=%s", progressUrl, key)).get().build();
 
     final Response response = client.newCall(request).execute();
 
