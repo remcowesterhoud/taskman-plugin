@@ -1,7 +1,7 @@
 package com.westerhoud.osrs.taskman.ui;
 
 import com.westerhoud.osrs.taskman.TaskmanPlugin;
-import com.westerhoud.osrs.taskman.domain.Progress;
+import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.Task;
 import com.westerhoud.osrs.taskman.domain.TierProgress;
 import lombok.extern.slf4j.Slf4j;
@@ -160,10 +160,10 @@ public class TaskmanPluginPanel extends PluginPanel {
 
   private void getProgressAndUpdateContent() {
     try {
-      final Progress progress = taskmanPlugin.progress();
+      final AccountProgress accountProgress = taskmanPlugin.progress();
       progressPanel.removeAll();
       progressPanel.add(progressLabel);
-      for (Map.Entry<String, TierProgress> entry : progress.getProgressByTier().entrySet()) {
+      for (Map.Entry<String, TierProgress> entry : accountProgress.getProgressByTier().entrySet()) {
         final String key = entry.getKey();
         final TierProgress value = entry.getValue();
         final ProgressBar progressBar = new ProgressBar();

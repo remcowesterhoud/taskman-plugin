@@ -1,7 +1,7 @@
 package com.westerhoud.osrs.taskman;
 
 import com.google.inject.Provides;
-import com.westerhoud.osrs.taskman.domain.Progress;
+import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.Task;
 import com.westerhoud.osrs.taskman.service.SheetService;
 import com.westerhoud.osrs.taskman.ui.TaskmanPluginPanel;
@@ -68,8 +68,8 @@ public class TaskmanPlugin extends Plugin {
     return sheetService.completeTask(config.spreadsheetKey(), config.passphrase());
   }
 
-  public Progress progress() throws Exception {
-    return sheetService.progress(config.spreadsheetKey(), config.passphrase());
+  public AccountProgress progress() throws Exception {
+    return sheetService.getAccountProgress(config.spreadsheetKey(), config.passphrase());
   }
 
   @Subscribe

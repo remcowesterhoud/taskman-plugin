@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Progress {
+public class AccountProgress {
   private Map<String, TierProgress> progressByTier;
   private String currentTier;
 }

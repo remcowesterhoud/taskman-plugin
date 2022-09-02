@@ -1,8 +1,8 @@
 package com.westerhoud.osrs.taskman.service;
 
 import com.google.gson.Gson;
+import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.ErrorResponse;
-import com.westerhoud.osrs.taskman.domain.Progress;
 import com.westerhoud.osrs.taskman.domain.SheetRequestBody;
 import com.westerhoud.osrs.taskman.domain.Task;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +65,8 @@ public class SheetService {
     return executeRequest(request);
   }
 
-  public Progress progress(final String key, final String passphrase) throws IOException {
+  public AccountProgress getAccountProgress(final String key, final String passphrase)
+      throws IOException {
     final Request request =
         new Request.Builder()
             .url(String.format("%s?key=%s&passphrase=%s", progressUrl, key, passphrase))
@@ -75,7 +76,7 @@ public class SheetService {
     final Response response = client.newCall(request).execute();
 
     if (response.code() == 200) {
-      return gson.fromJson(response.body().string(), Progress.class);
+      return gson.fromJson(response.body().string(), AccountProgress.class);
     }
 
     ErrorResponse error = mapResponseToErrorResponse(response);
