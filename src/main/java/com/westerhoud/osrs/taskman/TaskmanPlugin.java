@@ -5,6 +5,7 @@ import com.westerhoud.osrs.taskman.domain.AccountCredentials;
 import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.Task;
 import com.westerhoud.osrs.taskman.service.SheetService;
+import com.westerhoud.osrs.taskman.ui.CurrentTaskOverlay;
 import com.westerhoud.osrs.taskman.ui.TaskmanPluginPanel;
 import java.awt.image.BufferedImage;
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import okhttp3.OkHttpClient;
 
@@ -28,6 +30,8 @@ public class TaskmanPlugin extends Plugin {
   @Inject private ClientToolbar clientToolbar;
   @Inject private TaskmanConfig config;
   @Inject private OkHttpClient okHttpClient;
+  @Inject private OverlayManager overlayManager;
+  @Inject private CurrentTaskOverlay currentTaskOverlay;
 
   private TaskmanPluginPanel sidePanel;
   private SheetService sheetService;
@@ -49,6 +53,7 @@ public class TaskmanPlugin extends Plugin {
             .panel(sidePanel)
             .build();
     clientToolbar.addNavigation(navigationButton);
+    overlayManager.add(currentTaskOverlay);
   }
 
   @Override
@@ -58,15 +63,21 @@ public class TaskmanPlugin extends Plugin {
   }
 
   public Task getCurrentTask() throws Exception {
-    return sheetService.getCurrentTask(getCredentials().getIdentifier());
+    final Task task = sheetService.getCurrentTask(getCredentials().getIdentifier());
+    currentTaskOverlay.setTask(task);
+    return task;
   }
 
   public Task generateTask() throws Exception {
-    return sheetService.generateTask(getCredentials());
+    final Task task = sheetService.generateTask(getCredentials());
+    currentTaskOverlay.setTask(task);
+    return task;
   }
 
   public Task completeTask() throws Exception {
-    return sheetService.completeTask(getCredentials());
+    final Task task = sheetService.completeTask(getCredentials());
+    currentTaskOverlay.setTask(task);
+    return task;
   }
 
   public AccountProgress progress() throws Exception {

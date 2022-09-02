@@ -15,13 +15,17 @@ import net.runelite.client.util.ImageUtil;
 public class Task {
   private String name;
   private String imageUrl;
+  private transient BufferedImage image;
 
   public String getImageUrl() {
     return imageUrl.startsWith("http://") ? imageUrl.replace("http://", "https://") : imageUrl;
   }
 
   public BufferedImage getImage() {
-    BufferedImage image = null;
+    if (image != null) {
+      return image;
+    }
+
     try {
       final URL imageUrl = new URL(getImageUrl());
       image = ImageIO.read(imageUrl);

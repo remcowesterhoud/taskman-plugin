@@ -24,4 +24,13 @@ public interface TaskmanConfig extends Config {
   default String passphrase() {
     return "";
   }
+
+  @ConfigItem(
+      position = 2,
+      keyName = "showOverlay",
+      name = "Show current task overlay",
+      description = "Adds an overlay displaying the current task to the game client")
+  default boolean showOverlay() {
+    return true;
+  }
 }
