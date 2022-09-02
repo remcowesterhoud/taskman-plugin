@@ -207,8 +207,7 @@ public class TaskmanPluginPanel extends PluginPanel {
   private Icon getTaskImage(final Task currentTask) {
     BufferedImage image = null;
     try {
-      final String parsedImageUrl = currentTask.getImageUrl().split("\\?")[0];
-      final URL imageUrl = new URL(parsedImageUrl);
+      final URL imageUrl = new URL(currentTask.getImageUrl());
       image = ImageIO.read(imageUrl);
     } catch (final IOException e) {
       log.error(e.getMessage(), e);
