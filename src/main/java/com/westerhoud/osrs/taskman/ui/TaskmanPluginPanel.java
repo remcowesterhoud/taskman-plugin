@@ -10,10 +10,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
-import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -119,7 +116,7 @@ public class TaskmanPluginPanel extends PluginPanel {
   }
 
   private void updateTaskPanelContent(final Task task) {
-    imageLabel.setIcon(getTaskImage(task));
+    imageLabel.setIcon(resizeImage(task.getImage()));
     nameLabel.setText(task.getName());
     taskPanel.setVisible(true);
   }
@@ -204,20 +201,7 @@ public class TaskmanPluginPanel extends PluginPanel {
     }
   }
 
-  private Icon getTaskImage(final Task currentTask) {
-    BufferedImage image = null;
-    try {
-      final URL imageUrl = new URL(currentTask.getImageUrl());
-      image = ImageIO.read(imageUrl);
-    } catch (final IOException e) {
-      log.error(e.getMessage(), e);
-    }
-
-    if (image == null) {
-      log.info(currentTask.getImageUrl());
-      image = ImageUtil.loadImageResource(getClass(), "error.png");
-    }
-
+  private Icon resizeImage(final BufferedImage image) {
     final Image resizedImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
     return new ImageIcon(resizedImage);
   }
