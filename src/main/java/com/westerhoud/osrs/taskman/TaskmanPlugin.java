@@ -8,6 +8,7 @@ import com.westerhoud.osrs.taskman.service.SheetService;
 import com.westerhoud.osrs.taskman.ui.TaskmanPluginPanel;
 import java.awt.image.BufferedImage;
 import javax.inject.Inject;
+import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.client.config.ConfigManager;
@@ -78,7 +79,7 @@ public class TaskmanPlugin extends Plugin {
 
   @Subscribe
   public void onConfigChanged(final ConfigChanged configChanged) {
-    sidePanel.reset();
+    SwingUtilities.invokeLater(() -> sidePanel.reset());
   }
 
   @Provides
