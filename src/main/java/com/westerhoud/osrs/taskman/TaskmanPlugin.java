@@ -60,6 +60,7 @@ public class TaskmanPlugin extends Plugin {
   protected void shutDown() throws Exception {
     // Sidebar
     clientToolbar.removeNavigation(navigationButton);
+    overlayManager.remove(currentTaskOverlay);
   }
 
   public Task getCurrentTask() throws Exception {
