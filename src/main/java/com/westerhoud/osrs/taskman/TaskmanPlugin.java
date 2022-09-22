@@ -26,6 +26,8 @@ import okhttp3.OkHttpClient;
 @Slf4j
 @PluginDescriptor(name = "Taskman")
 public class TaskmanPlugin extends Plugin {
+
+  public static final String TASKMAN_CONFIG_GROUP = "taskman";
   @Inject private Client client;
   @Inject private ClientToolbar clientToolbar;
   @Inject private TaskmanConfig config;
@@ -91,7 +93,9 @@ public class TaskmanPlugin extends Plugin {
 
   @Subscribe
   public void onConfigChanged(final ConfigChanged configChanged) {
-    SwingUtilities.invokeLater(() -> sidePanel.reset());
+    if (configChanged.getGroup().equals(TASKMAN_CONFIG_GROUP)) {
+      SwingUtilities.invokeLater(() -> sidePanel.reset());
+    }
   }
 
   @Provides
