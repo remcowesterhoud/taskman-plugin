@@ -31,6 +31,6 @@ public interface TaskmanConfig extends Config {
       name = "Show current task overlay",
       description = "Adds an overlay displaying the current task to the game client")
   default boolean showOverlay() {
-    return true;
+    return false;
   }
 }
