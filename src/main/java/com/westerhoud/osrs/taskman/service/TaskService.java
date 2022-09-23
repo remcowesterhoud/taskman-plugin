@@ -1,7 +1,6 @@
 package com.westerhoud.osrs.taskman.service;
 
 import com.google.gson.Gson;
-import com.westerhoud.osrs.taskman.api.TaskService;
 import com.westerhoud.osrs.taskman.domain.AccountCredentials;
 import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.ErrorResponse;
@@ -16,7 +15,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 @Slf4j
-public class SheetService implements TaskService {
+public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService {
 
   private static final String BASE_URL = "https://osrs-taskman.herokuapp.com/sheet";
   private final OkHttpClient client;
@@ -26,7 +25,7 @@ public class SheetService implements TaskService {
   private final String completeUrl;
   private final String progressUrl;
 
-  public SheetService(final OkHttpClient okHttpClient) {
+  public TaskService(final OkHttpClient okHttpClient) {
     client = okHttpClient;
     gson = new Gson();
     currentUrl = BASE_URL + "/current";
