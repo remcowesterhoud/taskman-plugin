@@ -7,11 +7,11 @@ import java.io.IOException;
 
 public interface TaskService {
 
-  Task getCurrentTask(final String identifier) throws IOException;
+  Task getCurrentTask(final AccountCredentials credentials) throws IOException;
 
   Task generateTask(final AccountCredentials credentials) throws IOException;
 
   Task completeTask(final AccountCredentials credentials) throws IOException;
 
-  AccountProgress getAccountProgress(final String identifier) throws IOException;
+  AccountProgress getAccountProgress(final AccountCredentials credentials) throws IOException;
 }

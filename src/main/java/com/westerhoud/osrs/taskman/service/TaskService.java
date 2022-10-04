@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.westerhoud.osrs.taskman.domain.AccountCredentials;
 import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.ErrorResponse;
-import com.westerhoud.osrs.taskman.domain.SheetRequestBody;
 import com.westerhoud.osrs.taskman.domain.Task;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,10 @@ import okhttp3.Response;
 @Slf4j
 public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService {
 
-  private static final String BASE_URL = "https://osrs-taskman.herokuapp.com/sheet";
+  public static final String TASKMAN_IDENTIFIER_HEADER = "x-taskman-identifier";
+  public static final String TASKMAN_PASSWORD_HEADER = "x-taskman-password";
+  public static final String TASKMAN_SOURCE_HEADER = "x-taskman-source";
+  private static final String BASE_URL = "https://osrs-taskman.herokuapp.com/task";
   private final OkHttpClient client;
   private final Gson gson;
   private final String currentUrl;
@@ -35,14 +37,20 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
   }
 
   @Override
-  public Task getCurrentTask(final String key) throws IOException {
-    if (key == null || key.isEmpty()) {
+  public Task getCurrentTask(final AccountCredentials credentials) throws IOException {
+    if (!credentials.isValid()) {
       throw new IllegalArgumentException(
-          "Please set your username / spreadsheet key in the plugin configurations");
+          "Please configure your credentials in the plugin configurations");
     }
 
     final Request request =
-        new Request.Builder().url(String.format("%s?key=%s", currentUrl, key)).get().build();
+        new Request.Builder()
+            .url(currentUrl)
+            .addHeader(TASKMAN_IDENTIFIER_HEADER, credentials.getIdentifier())
+            .addHeader(TASKMAN_PASSWORD_HEADER, credentials.getPassword())
+            .addHeader(TASKMAN_SOURCE_HEADER, credentials.getSource().name())
+            .get()
+            .build();
 
     return executeRequest(request);
   }
@@ -53,7 +61,8 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
         new Request.Builder()
             .url(generateUrl)
             .header("Content-Type", "application/json")
-            .post(getRequestBody(credentials.getIdentifier(), credentials.getPassword()))
+            .addHeader(TASKMAN_SOURCE_HEADER, credentials.getSource().name())
+            .post(getRequestBody(credentials))
             .build();
     return executeRequest(request);
   }
@@ -64,20 +73,28 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
         new Request.Builder()
             .url(completeUrl)
             .header("Content-Type", "application/json")
-            .post(getRequestBody(credentials.getIdentifier(), credentials.getPassword()))
+            .addHeader(TASKMAN_SOURCE_HEADER, credentials.getSource().name())
+            .post(getRequestBody(credentials))
             .build();
     return executeRequest(request);
   }
 
   @Override
-  public AccountProgress getAccountProgress(final String key) throws IOException {
-    if (key == null || key.isEmpty()) {
+  public AccountProgress getAccountProgress(final AccountCredentials credentials)
+      throws IOException {
+    if (!credentials.isValid()) {
       throw new IllegalArgumentException(
           "Please set your username / spreadsheet key in the plugin configurations");
     }
 
     final Request request =
-        new Request.Builder().url(String.format("%s?key=%s", progressUrl, key)).get().build();
+        new Request.Builder()
+            .url(progressUrl)
+            .addHeader(TASKMAN_IDENTIFIER_HEADER, credentials.getIdentifier())
+            .addHeader(TASKMAN_PASSWORD_HEADER, credentials.getPassword())
+            .addHeader(TASKMAN_SOURCE_HEADER, credentials.getSource().name())
+            .get()
+            .build();
 
     final Response response = client.newCall(request).execute();
 
@@ -89,9 +106,8 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
     throw new IllegalArgumentException(error.getMessage());
   }
 
-  private RequestBody getRequestBody(final String key, final String passphrase) {
-    final SheetRequestBody body = new SheetRequestBody(key, passphrase);
-    return RequestBody.create(MediaType.parse("application/json"), gson.toJson(body));
+  private RequestBody getRequestBody(final AccountCredentials credentials) {
+    return RequestBody.create(MediaType.parse("application/json"), gson.toJson(credentials));
   }
 
   private Task executeRequest(final Request request) throws IOException {

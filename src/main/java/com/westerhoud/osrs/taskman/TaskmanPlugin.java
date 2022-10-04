@@ -66,7 +66,7 @@ public class TaskmanPlugin extends Plugin {
   }
 
   public Task getCurrentTask() throws Exception {
-    final Task task = taskService.getCurrentTask(getCredentials().getIdentifier());
+    final Task task = taskService.getCurrentTask(getCredentials());
     currentTaskOverlay.setTask(task);
     return task;
   }
@@ -84,11 +84,20 @@ public class TaskmanPlugin extends Plugin {
   }
 
   public AccountProgress progress() throws Exception {
-    return taskService.getAccountProgress(getCredentials().getIdentifier());
+    return taskService.getAccountProgress(getCredentials());
   }
 
   private AccountCredentials getCredentials() {
-    return new AccountCredentials(config.spreadsheetKey(), config.passphrase());
+    switch (config.taskSource()) {
+      case SPREADSHEET:
+        return new AccountCredentials(
+            config.spreadsheetKey(), config.passphrase(), config.taskSource());
+      case WEBSITE:
+        return new AccountCredentials(
+            config.websiteUsername(), config.websitePassword(), config.taskSource());
+      default:
+        throw new IllegalArgumentException("No task source selected in config.");
+    }
   }
 
   @Subscribe
