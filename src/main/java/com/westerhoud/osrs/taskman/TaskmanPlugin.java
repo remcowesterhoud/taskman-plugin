@@ -4,7 +4,7 @@ import com.google.inject.Provides;
 import com.westerhoud.osrs.taskman.domain.AccountCredentials;
 import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.Task;
-import com.westerhoud.osrs.taskman.service.SheetService;
+import com.westerhoud.osrs.taskman.service.TaskService;
 import com.westerhoud.osrs.taskman.ui.CurrentTaskOverlay;
 import com.westerhoud.osrs.taskman.ui.TaskmanPluginPanel;
 import java.awt.image.BufferedImage;
@@ -36,7 +36,7 @@ public class TaskmanPlugin extends Plugin {
   @Inject private CurrentTaskOverlay currentTaskOverlay;
 
   private TaskmanPluginPanel sidePanel;
-  private SheetService sheetService;
+  private TaskService taskService;
   private NavigationButton navigationButton;
 
   @Override
@@ -44,7 +44,7 @@ public class TaskmanPlugin extends Plugin {
     // Sidebar
     final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
 
-    sheetService = new SheetService(okHttpClient);
+    taskService = new TaskService(okHttpClient);
 
     sidePanel = new TaskmanPluginPanel(this);
     navigationButton =
@@ -66,29 +66,38 @@ public class TaskmanPlugin extends Plugin {
   }
 
   public Task getCurrentTask() throws Exception {
-    final Task task = sheetService.getCurrentTask(getCredentials().getIdentifier());
+    final Task task = taskService.getCurrentTask(getCredentials());
     currentTaskOverlay.setTask(task);
     return task;
   }
 
   public Task generateTask() throws Exception {
-    final Task task = sheetService.generateTask(getCredentials());
+    final Task task = taskService.generateTask(getCredentials());
     currentTaskOverlay.setTask(task);
     return task;
   }
 
   public Task completeTask() throws Exception {
-    final Task task = sheetService.completeTask(getCredentials());
+    final Task task = taskService.completeTask(getCredentials());
     currentTaskOverlay.setTask(task);
     return task;
   }
 
   public AccountProgress progress() throws Exception {
-    return sheetService.getAccountProgress(getCredentials().getIdentifier());
+    return taskService.getAccountProgress(getCredentials());
   }
 
   private AccountCredentials getCredentials() {
-    return new AccountCredentials(config.spreadsheetKey(), config.passphrase());
+    switch (config.taskSource()) {
+      case SPREADSHEET:
+        return new AccountCredentials(
+            config.spreadsheetKey(), config.passphrase(), config.taskSource());
+      case WEBSITE:
+        return new AccountCredentials(
+            config.websiteUsername(), config.websitePassword(), config.taskSource());
+      default:
+        throw new IllegalArgumentException("No task source selected in config.");
+    }
   }
 
   @Subscribe

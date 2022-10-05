@@ -1,32 +1,80 @@
 package com.westerhoud.osrs.taskman;
 
+import com.westerhoud.osrs.taskman.domain.TaskSource;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("taskman")
 public interface TaskmanConfig extends Config {
-  @ConfigItem(
+
+  @ConfigSection(
+      name = "Spreadsheet",
+      description = "Spreadsheet configuration",
       position = 1,
+      closedByDefault = true)
+  String spreadsheet = "spreadsheet";
+
+  @ConfigSection(
+      name = "Website",
+      description = "Website configuration",
+      position = 2,
+      closedByDefault = true)
+  String website = "website";
+
+  @ConfigItem(
+      position = 0,
+      keyName = "taskSource",
+      name = "Task source",
+      description = "Spreadsheet or website")
+  default TaskSource taskSource() {
+    return TaskSource.SPREADSHEET;
+  }
+
+  @ConfigItem(
+      position = 3,
       keyName = "key",
       name = "Spreadsheet key",
-      description = "The key of your spreadsheet")
+      description = "The key of your spreadsheet",
+      section = spreadsheet)
   default String spreadsheetKey() {
     return "";
   }
 
   @ConfigItem(
-      position = 2,
+      position = 4,
       keyName = "passphrase",
       name = "Passphrase",
       secret = true,
-      description = "The passphrase you have added in your sheet")
+      description = "The passphrase you have added in your sheet",
+      section = spreadsheet)
   default String passphrase() {
     return "";
   }
 
   @ConfigItem(
-      position = 2,
+      position = 5,
+      keyName = "websiteUsername",
+      name = "Username",
+      description = "Website username",
+      section = website)
+  default String websiteUsername() {
+    return "username";
+  }
+
+  @ConfigItem(
+      position = 6,
+      keyName = "websitePassword",
+      name = "Password",
+      description = "Website password",
+      section = website)
+  default String websitePassword() {
+    return "password";
+  }
+
+  @ConfigItem(
+      position = 7,
       keyName = "showOverlay",
       name = "Show current task overlay",
       description = "Adds an overlay displaying the current task to the game client")
