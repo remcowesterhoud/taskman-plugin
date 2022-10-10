@@ -5,11 +5,13 @@ import com.westerhoud.osrs.taskman.domain.AccountCredentials;
 import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.ErrorResponse;
 import com.westerhoud.osrs.taskman.domain.Task;
+import com.westerhoud.osrs.taskman.domain.TaskmanCommandData;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Request.Builder;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
@@ -19,6 +21,7 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
   public static final String TASKMAN_IDENTIFIER_HEADER = "x-taskman-identifier";
   public static final String TASKMAN_PASSWORD_HEADER = "x-taskman-password";
   public static final String TASKMAN_SOURCE_HEADER = "x-taskman-source";
+  public static final String TASKMAN_RSN_HEADER = "x-taskman-rsn";
   private static final String BASE_URL = "https://osrs-taskman.herokuapp.com/task";
   private final OkHttpClient client;
   private final Gson gson;
@@ -26,6 +29,7 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
   private final String generateUrl;
   private final String completeUrl;
   private final String progressUrl;
+  private final String commandUrl;
 
   public TaskService(final OkHttpClient okHttpClient) {
     client = okHttpClient;
@@ -34,10 +38,12 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
     generateUrl = BASE_URL + "/generate";
     completeUrl = BASE_URL + "/complete";
     progressUrl = BASE_URL + "/progress";
+    commandUrl = BASE_URL + "/command/%s";
   }
 
   @Override
-  public Task getCurrentTask(final AccountCredentials credentials) throws IOException {
+  public Task getCurrentTask(final AccountCredentials credentials, final String rsn)
+      throws IOException {
     if (!credentials.isValid()) {
       throw new IllegalArgumentException(
           "Please configure your credentials in the plugin configurations");
@@ -49,6 +55,7 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
             .addHeader(TASKMAN_IDENTIFIER_HEADER, credentials.getIdentifier())
             .addHeader(TASKMAN_PASSWORD_HEADER, credentials.getPassword())
             .addHeader(TASKMAN_SOURCE_HEADER, credentials.getSource().name())
+            .addHeader(TASKMAN_RSN_HEADER, rsn)
             .get()
             .build();
 
@@ -56,31 +63,35 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
   }
 
   @Override
-  public Task generateTask(final AccountCredentials credentials) throws IOException {
+  public Task generateTask(final AccountCredentials credentials, final String rsn)
+      throws IOException {
     final Request request =
         new Request.Builder()
             .url(generateUrl)
             .header("Content-Type", "application/json")
             .addHeader(TASKMAN_SOURCE_HEADER, credentials.getSource().name())
+            .addHeader(TASKMAN_RSN_HEADER, rsn)
             .post(getRequestBody(credentials))
             .build();
     return executeRequest(request);
   }
 
   @Override
-  public Task completeTask(final AccountCredentials credentials) throws IOException {
+  public Task completeTask(final AccountCredentials credentials, final String rsn)
+      throws IOException {
     final Request request =
         new Request.Builder()
             .url(completeUrl)
             .header("Content-Type", "application/json")
             .addHeader(TASKMAN_SOURCE_HEADER, credentials.getSource().name())
+            .addHeader(TASKMAN_RSN_HEADER, rsn)
             .post(getRequestBody(credentials))
             .build();
     return executeRequest(request);
   }
 
   @Override
-  public AccountProgress getAccountProgress(final AccountCredentials credentials)
+  public AccountProgress getAccountProgress(final AccountCredentials credentials, final String rsn)
       throws IOException {
     if (!credentials.isValid()) {
       throw new IllegalArgumentException(
@@ -93,6 +104,7 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
             .addHeader(TASKMAN_IDENTIFIER_HEADER, credentials.getIdentifier())
             .addHeader(TASKMAN_PASSWORD_HEADER, credentials.getPassword())
             .addHeader(TASKMAN_SOURCE_HEADER, credentials.getSource().name())
+            .addHeader(TASKMAN_RSN_HEADER, rsn)
             .get()
             .build();
 
@@ -104,6 +116,19 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
 
     final ErrorResponse error = mapResponseToErrorResponse(response);
     throw new IllegalArgumentException(error.getMessage());
+  }
+
+  @Override
+  public TaskmanCommandData getChatCommandData(final String rsn) throws IOException {
+    final Request request = new Builder().url(String.format(commandUrl, rsn)).get().build();
+
+    final Response response = client.newCall(request).execute();
+
+    if (response.code() == 200) {
+      return gson.fromJson(response.body().string(), TaskmanCommandData.class);
+    } else {
+      throw new IllegalArgumentException("Could not get task command data for rsn: " + rsn);
+    }
   }
 
   private RequestBody getRequestBody(final AccountCredentials credentials) {

@@ -81,4 +81,13 @@ public interface TaskmanConfig extends Config {
   default boolean showOverlay() {
     return false;
   }
+
+  @ConfigItem(
+      position = 8,
+      keyName = "taskmanCommand",
+      name = "Enable !taskman chat command",
+      description = "Send your current progress and task into the chat")
+  default boolean taskmanCommand() {
+    return true;
+  }
 }
