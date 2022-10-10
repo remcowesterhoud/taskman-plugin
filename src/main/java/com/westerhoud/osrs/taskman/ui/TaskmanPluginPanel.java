@@ -44,6 +44,7 @@ public class TaskmanPluginPanel extends PluginPanel {
       new ColorJButton("Generate task", ColorScheme.DARK_GRAY_COLOR);
   private final ColorJButton completeButton =
       new ColorJButton("Complete task", ColorScheme.DARK_GRAY_COLOR);
+  private final JPanel tryAgainPanel;
 
   public TaskmanPluginPanel(final TaskmanPlugin taskmanPlugin) {
     super();
@@ -97,22 +98,23 @@ public class TaskmanPluginPanel extends PluginPanel {
 
     errorPanel = new PluginErrorPanel();
     errorPanel.setBorder(new EmptyBorder(50, 0, 0, 0));
-    errorPanel.setVisible(false);
-    final JPanel tryAgainPanel = new JPanel();
+    tryAgainPanel = new JPanel();
     final JButton tryAgainButton = new JButton("Try again");
     tryAgainButton.setFocusPainted(false);
     tryAgainButton.addActionListener(e -> reset());
     tryAgainButton.setPreferredSize(new Dimension(100, 25));
     tryAgainButton.setMaximumSize(new Dimension(150, 25));
     tryAgainPanel.add(tryAgainButton);
+    tryAgainPanel.setVisible(false);
     errorPanel.add(tryAgainPanel, BorderLayout.SOUTH);
-
-    getCurrentTaskAndUpdateContent();
-    getProgressAndUpdateContent();
-
+    errorPanel.setContent("Please login first!", "");
     add(taskPanel, BorderLayout.NORTH);
     add(progressPanel, BorderLayout.CENTER);
     add(errorPanel, BorderLayout.SOUTH);
+  }
+
+  public void init() {
+    reset();
   }
 
   private void updateTaskPanelContent(final Task task) {
@@ -122,6 +124,7 @@ public class TaskmanPluginPanel extends PluginPanel {
   }
 
   private void showErrorMessage(final Exception e) {
+    tryAgainPanel.setVisible(true);
     errorPanel.setContent("Oops... Something went wrong", e.getMessage());
     errorPanel.setVisible(true);
     errorPanel.revalidate();
@@ -193,6 +196,8 @@ public class TaskmanPluginPanel extends PluginPanel {
           progressBar.setForeground(Color.GREEN);
         }
         progressPanel.add(progressBar);
+      }
+      if (!accountProgress.getProgressByTier().isEmpty()) {
         progressPanel.setVisible(true);
       }
     } catch (final Exception e) {
@@ -217,5 +222,15 @@ public class TaskmanPluginPanel extends PluginPanel {
     progressPanel.setVisible(false);
     getCurrentTaskAndUpdateContent();
     getProgressAndUpdateContent();
+  }
+
+  public void onLogout() {
+    taskPanel.setVisible(false);
+    progressPanel.setVisible(false);
+    tryAgainPanel.setVisible(false);
+    errorPanel.setContent("Please login first!", "");
+    errorPanel.setVisible(true);
+    errorPanel.revalidate();
+    errorPanel.repaint();
   }
 }
