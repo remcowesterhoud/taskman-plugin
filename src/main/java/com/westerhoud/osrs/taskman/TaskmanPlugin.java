@@ -172,6 +172,7 @@ public class TaskmanPlugin extends Plugin {
       loggedIn = true;
     } else if (gameStateChanged.getGameState() == GameState.LOGIN_SCREEN) {
       loggedIn = false;
+      sidePanelInitialized = false;
       sidePanel.onLogout();
     }
   }
