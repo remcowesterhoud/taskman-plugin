@@ -1,5 +1,6 @@
 package com.westerhoud.osrs.taskman;
 
+import com.google.gson.Gson;
 import com.google.inject.Provides;
 import com.westerhoud.osrs.taskman.domain.AccountCredentials;
 import com.westerhoud.osrs.taskman.domain.AccountProgress;
@@ -48,6 +49,7 @@ public class TaskmanPlugin extends Plugin {
   @Inject private ClientToolbar clientToolbar;
   @Inject private TaskmanConfig config;
   @Inject private OkHttpClient okHttpClient;
+  @Inject private Gson gson;
   @Inject private OverlayManager overlayManager;
   @Inject private CurrentTaskOverlay currentTaskOverlay;
   @Inject private ChatCommandManager chatCommandManager;
@@ -62,7 +64,7 @@ public class TaskmanPlugin extends Plugin {
   protected void startUp() throws Exception {
     // Sidebar
     final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
-    taskService = new TaskService(okHttpClient);
+    taskService = new TaskService(okHttpClient, gson);
     chatCommandManager.registerCommandAsync(TASKMAN_CHAT_COMMAND, this::getTaskmanCommandData);
 
     sidePanel = new TaskmanPluginPanel(this);

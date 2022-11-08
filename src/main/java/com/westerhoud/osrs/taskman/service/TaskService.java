@@ -31,9 +31,9 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
   private final String progressUrl;
   private final String commandUrl;
 
-  public TaskService(final OkHttpClient okHttpClient) {
+  public TaskService(final OkHttpClient okHttpClient, final Gson gson) {
     client = okHttpClient;
-    gson = new Gson();
+    this.gson = gson;
     currentUrl = BASE_URL + "/current";
     generateUrl = BASE_URL + "/generate";
     completeUrl = BASE_URL + "/complete";
