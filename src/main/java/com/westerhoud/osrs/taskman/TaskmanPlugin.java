@@ -180,6 +180,7 @@ public class TaskmanPlugin extends Plugin {
   @Subscribe
   public void onGameTick(final GameTick gameTick) {
     if (!sidePanelInitialized && loggedIn) {
+      log.info("Initializing sidepanel");
       sidePanel.init();
       sidePanelInitialized = true;
     }
@@ -188,6 +189,7 @@ public class TaskmanPlugin extends Plugin {
   @Subscribe
   public void onConfigChanged(final ConfigChanged configChanged) {
     if (configChanged.getGroup().equals(TASKMAN_CONFIG_GROUP)) {
+      log.info("Configuration changed");
       SwingUtilities.invokeLater(() -> sidePanel.reset());
     }
   }
