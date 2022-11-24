@@ -22,7 +22,7 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
   public static final String TASKMAN_PASSWORD_HEADER = "x-taskman-password";
   public static final String TASKMAN_SOURCE_HEADER = "x-taskman-source";
   public static final String TASKMAN_RSN_HEADER = "x-taskman-rsn";
-  private static final String BASE_URL = "https://osrs-taskman.herokuapp.com/task";
+  private static final String BASE_URL = "https://taskman.up.railway.app/task";
   private final OkHttpClient client;
   private final Gson gson;
   private final String currentUrl;
