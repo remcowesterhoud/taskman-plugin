@@ -67,6 +67,7 @@ public interface TaskmanConfig extends Config {
       position = 6,
       keyName = "websitePassword",
       name = "Password",
+      secret = true,
       description = "Website password",
       section = website)
   default String websitePassword() {
