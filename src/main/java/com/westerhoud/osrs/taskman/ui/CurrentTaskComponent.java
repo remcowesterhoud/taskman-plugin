@@ -14,16 +14,27 @@ import net.runelite.client.ui.overlay.components.LayoutableRenderableEntity;
 import net.runelite.client.util.ImageUtil;
 
 @RequiredArgsConstructor
-@Setter
 public class CurrentTaskComponent implements LayoutableRenderableEntity {
 
   public static final int BORDER_SIZE = 15;
-  private final Task task;
+  private Task task;
+  private final boolean taskChanged = false;
   private final BufferedImage background =
       ImageUtil.loadImageResource(getClass(), "empty_dark.png");
 
   @Getter private final Rectangle bounds = new Rectangle();
-  private Point preferredLocation = new Point();
+  @Setter private Point preferredLocation = new Point();
+
+  private Image resizedTaskIcon;
+  private int taskIconX;
+
+  public void setTask(final Task task) {
+    this.task = task;
+
+    final int taskIconSize = background.getHeight() - (BORDER_SIZE * 2);
+    taskIconX = background.getWidth() - BORDER_SIZE - taskIconSize;
+    resizedTaskIcon = resizeImage(task.getImage(), taskIconSize, taskIconSize);
+  }
 
   @Override
   public void setPreferredSize(final Dimension dimension) {}
@@ -31,11 +42,6 @@ public class CurrentTaskComponent implements LayoutableRenderableEntity {
   @Override
   public Dimension render(final Graphics2D graphics) {
     graphics.drawImage(background, preferredLocation.x, preferredLocation.y, null);
-
-    final int taskIconSize = background.getHeight() - (BORDER_SIZE * 2);
-    final int taskIconX = background.getWidth() - BORDER_SIZE - taskIconSize;
-
-    final Image resizedTaskIcon = resizeImage(task.getImage(), taskIconSize, taskIconSize);
     graphics.drawImage(resizedTaskIcon, taskIconX, BORDER_SIZE, null);
 
     final Dimension dimension = new Dimension(background.getWidth(), background.getHeight());
