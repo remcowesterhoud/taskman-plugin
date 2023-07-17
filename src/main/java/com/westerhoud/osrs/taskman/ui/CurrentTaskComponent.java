@@ -33,7 +33,7 @@ public class CurrentTaskComponent implements LayoutableRenderableEntity {
 
     final int taskIconSize = background.getHeight() - (BORDER_SIZE * 2);
     taskIconX = background.getWidth() - BORDER_SIZE - taskIconSize;
-    resizedTaskIcon = resizeImage(task.getImage(), taskIconSize, taskIconSize);
+    resizedTaskIcon = task.getResizedImage(taskIconSize, taskIconSize);
   }
 
   @Override
@@ -48,9 +48,5 @@ public class CurrentTaskComponent implements LayoutableRenderableEntity {
     bounds.setLocation(preferredLocation);
     bounds.setSize(dimension);
     return dimension;
-  }
-
-  private Image resizeImage(final BufferedImage image, final int width, final int height) {
-    return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
   }
 }

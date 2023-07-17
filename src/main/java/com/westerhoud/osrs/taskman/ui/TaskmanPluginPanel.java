@@ -118,7 +118,7 @@ public class TaskmanPluginPanel extends PluginPanel {
   }
 
   private void updateTaskPanelContent(final Task task) {
-    imageLabel.setIcon(resizeImage(task.getImage()));
+    imageLabel.setIcon(new ImageIcon(task.getResizedImage(25, 25)));
     nameLabel.setText(task.getName());
     taskPanel.setVisible(true);
   }
@@ -206,14 +206,9 @@ public class TaskmanPluginPanel extends PluginPanel {
     }
   }
 
-  private Icon resizeImage(final BufferedImage image) {
-    final Image resizedImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-    return new ImageIcon(resizedImage);
-  }
-
   private Icon getRefreshButton() {
     final BufferedImage image = ImageUtil.loadImageResource(getClass(), "refresh.png");
-    final Image resizedImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+    final Image resizedImage = image.getScaledInstance(25, 25, Image.SCALE_FAST);
     return new ImageIcon(resizedImage);
   }
 

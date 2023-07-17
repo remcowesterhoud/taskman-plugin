@@ -6,11 +6,9 @@ import com.westerhoud.osrs.taskman.domain.AccountProgress;
 import com.westerhoud.osrs.taskman.domain.ErrorResponse;
 import com.westerhoud.osrs.taskman.domain.Task;
 import com.westerhoud.osrs.taskman.domain.TaskmanCommandData;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.client.util.ImageUtil;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -27,8 +25,6 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
   public static final String TASKMAN_SOURCE_HEADER = "x-taskman-source";
   public static final String TASKMAN_RSN_HEADER = "x-taskman-rsn";
   private static final String BASE_URL = "https://taskman.up.railway.app/task";
-  private static final BufferedImage ERROR_IMAGE =
-      ImageUtil.loadImageResource(TaskService.class, "error.png");
   private final OkHttpClient client;
   private final Gson gson;
   private final String currentUrl;
@@ -172,13 +168,11 @@ public class TaskService implements com.westerhoud.osrs.taskman.api.TaskService 
 
       if (responseBody == null) {
         log.info(task.getImageUrl());
-        task.setImage(ERROR_IMAGE);
         return;
       }
       task.setImage(ImageIO.read(responseBody.byteStream()));
     } catch (final IOException e) {
       log.error(e.getMessage(), e);
-      task.setImage(ERROR_IMAGE);
     }
   }
 }
