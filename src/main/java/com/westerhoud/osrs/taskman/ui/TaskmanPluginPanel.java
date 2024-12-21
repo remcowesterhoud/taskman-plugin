@@ -26,6 +26,7 @@ import net.runelite.client.ui.components.PluginErrorPanel;
 import net.runelite.client.ui.components.ProgressBar;
 import net.runelite.client.ui.components.shadowlabel.JShadowedLabel;
 import net.runelite.client.util.ImageUtil;
+import net.runelite.client.util.LinkBrowser;
 
 @Slf4j
 public class TaskmanPluginPanel extends PluginPanel {
@@ -44,6 +45,8 @@ public class TaskmanPluginPanel extends PluginPanel {
       new ColorJButton("Generate task", ColorScheme.DARK_GRAY_COLOR);
   private final ColorJButton completeButton =
       new ColorJButton("Complete task", ColorScheme.DARK_GRAY_COLOR);
+  private final ColorJButton faqButton =
+      new ColorJButton("FAQ", ColorScheme.DARKER_GRAY_COLOR);
   private final JPanel tryAgainPanel;
 
   public TaskmanPluginPanel(final TaskmanPlugin taskmanPlugin) {
@@ -82,8 +85,12 @@ public class TaskmanPluginPanel extends PluginPanel {
     completeButton.setFont(FontManager.getRunescapeSmallFont());
     completeButton.setFocusPainted(false);
     completeButton.addActionListener(e -> completeTaskAndUpdateContent());
+    faqButton.setFont(FontManager.getRunescapeSmallFont());
+    faqButton.setFocusPainted(false);
+    faqButton.addActionListener(e -> LinkBrowser.browse("https://docs.google.com/document/d/e/2PACX-1vTHfXHzMQFbt_iYAP-O88uRhhz3wigh1KMiiuomU7ftli-rL_c3bRqfGYmUliE1EHcIr3LfMx2UTf2U/pub"));
     buttonPanel.add(generateButton, BorderLayout.WEST);
     buttonPanel.add(completeButton, BorderLayout.CENTER);
+    buttonPanel.add(faqButton, BorderLayout.SOUTH);
 
     progressPanel = new JPanel(new GridLayout(5, 1, 10, 10));
     progressPanel.setBorder(new EmptyBorder(30, 10, 0, 10));
